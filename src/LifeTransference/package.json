@@ -1,0 +1,16 @@
+{
+  "name": "LifeTransference",
+  "version": "1.0.1",
+  "description": "",
+  "main": "LifeTransference.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "denoflions",
+  "license": "ISC",
+  "core": "*",
+  "modloader64_deps": {
+    "MajorasMask": "https://github.com/hylian-modding/Core-MajorasMask.git"
+  }
+}
