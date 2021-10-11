@@ -1,3 +1,3 @@
-export class LifeTransferenceStorage{
+export class LifeTransferenceStorage {
     health: number = 0;
 }

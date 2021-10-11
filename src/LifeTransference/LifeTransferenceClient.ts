@@ -6,8 +6,9 @@ import { IModLoaderAPI } from 'modloader64_api/IModLoaderAPI';
 import { ModLoaderAPIInject } from "modloader64_api/ModLoaderAPIInjector";
 import { NetworkHandler } from 'modloader64_api/NetworkHandler';
 import { LifeTransferenceCoreWrapper } from './LifeTransferenceCoreWrapper';
+import { isTitleScreen } from './LifeTransferenceSupportedCores';
 
-export class LifeTransferenceClient{
+export class LifeTransferenceClient {
 
     @InjectCore()
     core!: any;
@@ -17,16 +18,16 @@ export class LifeTransferenceClient{
     storage: LifeTransferenceStorage = new LifeTransferenceStorage();
 
     @Preinit()
-    preinit(){
+    preinit() {
         this.wrapper = new LifeTransferenceCoreWrapper(this.core, this.ModLoader);
     }
 
     @onTick()
-    onTick(frame: number){
-        if (this.core.helper.isTitleScreen() || !this.core.helper.isSceneNumberValid()){
+    onTick(frame: number) {
+        if (isTitleScreen(this.core)) {
             return;
         }
-        if (this.wrapper.health !== this.storage.health){
+        if (this.wrapper.health !== this.storage.health) {
             this.storage.health = this.wrapper.health;
             let packet: LifeTransferencePacket = new LifeTransferencePacket(this.storage.health, this.ModLoader.clientLobby);
             this.ModLoader.clientSide.sendPacket(packet);
@@ -34,8 +35,8 @@ export class LifeTransferenceClient{
     }
 
     @NetworkHandler('LifeTransferencePacket')
-    onLifeTransference(packet: LifeTransferencePacket){
-        if (this.wrapper.health !== packet.health){
+    onLifeTransference(packet: LifeTransferencePacket) {
+        if (this.wrapper.health !== packet.health) {
             this.wrapper.health = packet.health;
             this.storage.health = packet.health;
         }

@@ -1,23 +1,20 @@
 import { IModLoaderAPI } from "modloader64_api/IModLoaderAPI";
-import { IOOTCore } from "modloader64_api/OOT/OOTAPI";
-import { IMMCore } from 'MajorasMask/API/MMAPI';
-import { LifeTransferenceSupportedCores } from "./LifeTransferenceSupportedCores";
+import { isMM, isOOT, LifeTransferenceSupportedCores } from "./LifeTransferenceSupportedCores";
+import { IZ64Main } from 'Z64Lib/API/Common/IZ64Main';
 
 export class LifeTransferenceCoreWrapper {
     private core: any;
     private ModLoader!: IModLoaderAPI;
-    private game: LifeTransferenceSupportedCores;
+    game: LifeTransferenceSupportedCores;
 
     constructor(core: any, ModLoader: IModLoaderAPI) {
         this.core = core;
         this.ModLoader = ModLoader;
-        if (this.ModLoader.isModLoaded(LifeTransferenceSupportedCores.OCARINA_OF_TIME)) {
-            this.game = LifeTransferenceSupportedCores.OCARINA_OF_TIME;
-        } else if (this.ModLoader.isModLoaded(LifeTransferenceSupportedCores.MAJORAS_MASK)) {
-            this.game = LifeTransferenceSupportedCores.MAJORAS_MASK;
-        }else if (this.ModLoader.isModLoaded(LifeTransferenceSupportedCores.SUPER_MARIO_64)){
+        if (this.ModLoader.isModLoaded(LifeTransferenceSupportedCores.Z64)) {
+            this.game = LifeTransferenceSupportedCores.Z64;
+        } else if (this.ModLoader.isModLoaded(LifeTransferenceSupportedCores.SUPER_MARIO_64)) {
             this.game = LifeTransferenceSupportedCores.SUPER_MARIO_64;
-        }else if (this.ModLoader.isModLoaded(LifeTransferenceSupportedCores.BANJO_KAZOOIE)){
+        } else if (this.ModLoader.isModLoaded(LifeTransferenceSupportedCores.BANJO_KAZOOIE)) {
             this.game = LifeTransferenceSupportedCores.BANJO_KAZOOIE;
         } else {
             this.game = LifeTransferenceSupportedCores.UNKNOWN;
@@ -26,10 +23,12 @@ export class LifeTransferenceCoreWrapper {
 
     get health(): number {
         switch (this.game) {
-            case LifeTransferenceSupportedCores.OCARINA_OF_TIME:
-                return (this.core as IOOTCore).save.health;
-            case LifeTransferenceSupportedCores.MAJORAS_MASK:
-                return (this.core as IMMCore).save.hearts;
+            case LifeTransferenceSupportedCores.Z64:
+                if (isOOT()) {
+                    return (this.core as IZ64Main).OOT!.save.health;
+                } else if (isMM()) {
+                    return (this.core as IZ64Main).MM!.save.hearts;
+                }
             case LifeTransferenceSupportedCores.SUPER_MARIO_64:
                 // This isn't in SM64 Core.
                 return this.ModLoader.emulator.rdramRead8(0x8033B21E);
@@ -42,11 +41,12 @@ export class LifeTransferenceCoreWrapper {
 
     set health(hp: number) {
         switch (this.game) {
-            case LifeTransferenceSupportedCores.OCARINA_OF_TIME:
-                (this.core as IOOTCore).save.health = hp;
-                break;
-            case LifeTransferenceSupportedCores.MAJORAS_MASK:
-                (this.core as IMMCore).save.hearts = hp;
+            case LifeTransferenceSupportedCores.Z64:
+                if (isOOT()) {
+                    (this.core as IZ64Main).OOT!.save.health = hp;
+                } else if (isMM()) {
+                    (this.core as IZ64Main).MM!.save.hearts = hp;
+                }
                 break;
             case LifeTransferenceSupportedCores.SUPER_MARIO_64:
                 this.ModLoader.emulator.rdramWrite8(0x8033B21E, hp);
