@@ -1,6 +1,6 @@
 {
   "name": "LifeTransference",
-  "version": "1.0.2-nightly@7edb726",
+  "version": "1.0.2-nightly@d11f2d1",
   "description": "",
   "main": "LifeTransference.js",
   "scripts": {
@@ -13,6 +13,6 @@
   "modloader64_deps": {
     "MajorasMask": "https://github.com/hylian-modding/Core-MajorasMask.git"
   },
-  "date": "Mon, 11 Oct 2021 13:27:21 GMT",
-  "commit": "7edb726"
+  "date": "Mon, 11 Oct 2021 13:28:26 GMT",
+  "commit": "d11f2d1"
 }
